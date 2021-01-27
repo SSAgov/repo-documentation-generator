@@ -1,0 +1,390 @@
+{
+  "title": "codeMetadata.json Schema v3.0",
+  "type": "object",
+  "required": [
+    "publiclySharedMetadata",
+    "internalMetadata"
+  ],
+  "definitions": {
+    "employee": {
+      "type": "object",
+      "required": [
+        "emailAddress",
+        "company"
+      ],
+      "properties": {
+        "emailAddress": {
+          "title": "Email",
+          "type": "string",
+          "format": "email",
+          "description": "The email address of the employee."
+        },
+        "company": {
+          "title": "Company",
+          "type": "string",
+          "description": "The company of the employee."
+        }
+      }
+    }
+  },
+  "properties": {
+    "conformsToSchemaUrl": {
+      "type": "string",
+      "description": "The URL of the schema that this metadata file conforms to.",
+      "title": "Conforms to Schema URL"
+    },
+    "metadataUpdatedDate": {
+      "title": "Metadata Updated Date",
+      "description": "The date this codeMetadata.json file was last updated.",
+      "type": "string",
+      "format": "date"
+    },
+    "publiclySharedMetadata": {
+      "title": "Publicly Shared Metadata",
+      "description": "The information in this section may be shared with public.",
+      "properties": {
+        "codeAssetGUID": {
+          "type": "string",
+          "description": "A globally unique identifier assigned to this code asset that will be used to identify it from this point forward, therefore it shouldnt change. If you are updating an existing codeMetadata.json file, use the GUID from that file.",
+          "title": "Code Asset GUID"
+        },
+        "codeAssetGroupGUID": {
+          "type": "string",
+          "description": "A globally unique identifier assigned to this code asset group. If you want to relate a few code assets together, then give them the same group GUID. For example, if your application has a backend web services module and a front end web gui module, give them the same Code Asset Group GUID. ",
+          "title": "Code Asset Group GUID"
+        },
+        "codeAssetTitle": {
+          "type": "string",
+          "title": "Repo Title (not the repo name)",
+          "description": "The english name of the repo (not the actual repo name)."
+        },
+        "repoStatus": {
+          "title": "Is the repo a",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "Proof of concept",
+              "Developer Sandbox"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "isArchive": {
+          "title": "Is this repo archived?",
+          "description": "This repository has been archived and is no longer in use.",
+          "type": "string",
+          "enum": [
+            "Yes",
+             "No"
+             ],
+          "default": "No"
+        },
+        "publiclyHostedInstanceURL": {
+          "title": "Publicly Hosted Instance URL",
+          "description": "If this code asset compiles into a hosted website or page that is publicly accessible, then it should be listed here.",
+          "type": "string"
+        },
+        "openSourcedProject": {
+          "title": "Has this code been Open Sourced?",
+          "description": "Is this project open sourced?",
+          "type": "string",
+          "enum": [
+            "Yes",
+             "No"
+             ],
+             "default": "No"
+        }
+      },
+      "required": [
+        "codeAssetGUID",
+        "codeAssetGroupGUID",
+        "codeAssetTitle"
+      ],
+      "dependencies":{
+        "isArchive":{
+          "oneOf":[
+              {
+                  "properties": {
+                    "isArchive": {
+                      "enum": [
+                        "No"
+                      ]
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "isArchive": {
+                      "enum": [
+                        "Yes"
+                      ]
+                    },
+                    "developmentEndDate": {
+                      "title": "Development End Date",
+                      "description": "If develpment on the code asset is no longer active, the date when development stopped. Estimates are okay.",
+                      "type": "string",
+                      "format": "date"
+                    }
+                      }
+                }
+          ]
+          },
+          "openSourcedProject":{
+            "oneOf":[
+                {
+                    "properties": {
+                      "openSourcedProject": {
+                        "enum": [
+                          "No"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "openSourcedProject": {
+                        "enum": [
+                          "Yes"
+                        ]
+                      },
+                      "partneringAgencies": {
+                        "title": "Partnering Agencies",
+                        "description": "An array of objects including an acronym for each agency partnering on the project and the contact email at such agency.",
+                        "items": {
+                          "properties": {
+                            "name": {
+                              "title": "Agency Acronym",
+                              "description": "The acronym describing the partner agency.",
+                              "type": "string"
+                            },
+                            "email": {
+                              "title": "POC Email",
+                              "description": "The email address for the point of contact at the partner agency.",
+                              "type": "string"
+                            }
+                          },
+                          "required": [],
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "publicRepository": {
+                        "title": "Public Repository",
+                        "properties": {
+                          "projectHomepageURL": {
+                            "type": "string",
+                            "title": "Public Project Homepage URL",
+                            "description": "The URL of the public code asset homepage."
+                          },
+                          "downloadURL": {
+                            "type": "string",
+                            "title": "Public Repository Download URL",
+                            "description": "The URL where a distribution of the code asset can be found."
+                          },
+                          "repositoryUrl": {
+                            "type": "string",
+                            "title": "Public Repository URL",
+                            "description": "The URL of the public code asset repository."
+                          }
+                        },
+                        "required": [],
+                        "type": "object"
+                      }
+                        }
+                  }
+            ]
+            }
+      },
+      "type": "object"
+    },
+    "internalMetadata": {
+      "title": "Internal Metadata",
+      "description": "The information in this section is for internal use and will not be released to public.",
+      "properties": {
+          "publiclySharedMetadataConcerns": {
+              "description": "Just to clarify, if you believe the existence of this code asset should be hidden from the public eye, select yes. We are not asking about sharing the code with the public, we are only asking about sharing the data in the fields above with the public, like title, description, etc",
+              "title": "Any concerns with sharing 'Publicly Shared Metadata' with the public?",
+              "type":"string",
+              "enum": [
+                 "Yes",
+                 "No"],
+              "default": "No"
+          },
+        "OCD": {
+          "title": "Office Code",
+          "description": "What office does the repo belong to / which office is responsible for maintaining this code?",
+          "type": "string"
+        },
+        "projectID": {
+          "title": "Project ID",
+          "description": "What is the Project ID.",
+          "type": "string"
+        },
+        "backlogUrl": {
+          "title": "Backlog URL",
+          "description": "What is the URL to your backlog? The backlog is the tool you are using to track your work items such as issues, bugs, epics, user stories, requirements, enhacements, etc. like JIRA, VersionOne, Confluence, BACKLOG.md, etc.",
+          "type": "string"
+        },
+        "dependentOnDataStore": {
+          "title": "Does the source code depend on a Data Store?",
+          "description": "Does the source code depend on a Data Store? (Does this code need a database or similar to work properly?)",
+          "type": "string",
+          "enum": [
+            "Yes",
+             "No"
+             ],
+             "default": "No"
+        },
+        "sensitiveData": {
+          "title": "Does the source code:",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "Read PII",
+              "Write PII",
+              "Read PHI",
+              "Write PHI",
+              "Read FTI",
+              "Write FTI"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "intranetProjectHomepageURL": {
+          "title": "Intranet Project Homepage URL",
+          "description": "Intranet Project Homepage URL.",
+          "type": "string"
+        },
+        "hostedInstances": {
+          "title": "Hosted instances",
+          "description": "The locations where the source code is deployed or hosted.",
+          "items": {
+            "properties": {
+              "name": {
+                "title": "Instance Name / Environment Name",
+                "description": "Name of the hosted instance environment.",
+                "type": "string"
+              },
+              "uri": {
+                "title": "URI/System information",
+                "description": "URI/System information of the hosted instance.",
+                "type": "string"
+              },
+              "notes": {
+                "title": "Notes",
+                "description": "Any notes.",
+                "type": "string"
+              }
+            },
+            "required": [],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "OCD"
+      ],
+      "dependencies":{
+          "publiclySharedMetadataConcerns":{
+            "oneOf":[
+                {
+                    "properties": {
+                      "publiclySharedMetadataConcerns": {
+                        "enum": [
+                          "No"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "publiclySharedMetadataConcerns": {
+                        "enum": [
+                          "Yes"
+                        ]
+                      },
+                      "concernsComments": {
+                        "title": "Concerns",
+                        "description": "If you have concerns, please enter them below.",
+                        "type": "string"
+                      }
+                        }
+                  }
+            ]
+            },
+          "dependentOnDataStore":{
+            "oneOf":[
+                {
+                    "properties": {
+                      "dependentOnDataStore": {
+                        "enum": [
+                          "No"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "dependentOnDataStore": {
+                        "enum": [
+                          "Yes"
+                        ]
+                      },
+                      "databasehostedInstances": {
+                        "title": "Data Stores",
+                        "description": "The locations where the data store is hosted",
+                        "items": {
+                          "properties": {
+                            "name": {
+                              "title": "Data Store Instance Name",
+                              "description": "Name of the hosted instance environment.",
+                              "type": "string"
+                            },
+                            "DBMS": {
+                              "title": "DBMS/ Data Store Format",
+                              "description": "Database Management System/ Data Store Format",
+                              "type": "string",
+                              "enum": [
+                                "Db2", 
+                                "Greenplum",
+                                "MongoDB",
+                                "MySql",
+                                "Oracle",
+                                "PostgreSQL",
+                                "SQlite",
+                                "SQLServer",
+                                "text/csv",
+                                "Other"
+                              ],
+                              "default": "Other"
+                            },
+                            "url": {
+                              "title": "Data Store URL",
+                              "description": "Data Store URL",
+                              "type": "string"
+                            },
+                            "notes": {
+                              "title": "Notes",
+                              "description": "Any notes.",
+                              "type": "string"
+                            }
+                          },
+                          "required": [],
+                          "type": "object"
+                        },
+                        "type": "array"
+                      }
+                        }
+                  }
+            ]
+            }
+        },
+      "type": "object"
+    }
+  }
+}
+
+
